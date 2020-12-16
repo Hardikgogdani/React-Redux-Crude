@@ -1,6 +1,7 @@
 import {User_Data} from './userType';
-export const UserData = (number =1 ) =>{
+export const UserData = (data) =>{
     return {
-        type:User_Data
+        type:User_Data,
+        payload: data
     }
 }
