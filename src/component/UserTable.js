@@ -1,11 +1,23 @@
-import React from 'react';
-import { Row, Col } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { UserDelete } from '../redux';
+import { Row, Col, Popconfirm, Button } from 'antd';
 import { connect } from 'react-redux';
 import Table from "antd/lib/table";
 
 const UserTable = (props) => {
-    const { data } = props;
+    const { list, userDelete } = props;
+    const [data1, setData1] = useState()
+    useEffect(() => {
+        setData1(list)
+    }, [list, userDelete])
 
+    const onDelete = (id) => {
+        userDelete(id);
+    }
+
+    const onEdit =(redord)=>{
+
+    }
     const columns = [
         {
             title: 'First Name',
@@ -40,7 +52,22 @@ const UserTable = (props) => {
             title: 'Password',
             dataIndex: 'password',
             key: 'password',
-        }
+        },
+        {
+            title: 'Action',
+            dataIndex: 'id',
+            render: (text, record) => (
+                <div>
+
+                    <Button className="btn btn-outline-primary btn-mini" onConfirm={() => { OnEdit(record.id) }}>Edit</Button>
+
+                    &nbsp;&nbsp;
+                    <Popconfirm title="Are you sure to Delete？" onConfirm={() => { onDelete(record.id) }} >
+                        <Button className="btn btn-outline-danger btn-mini"  >Delete</Button>
+                    </Popconfirm>
+                </div>
+            )
+        },
     ]
 
 
@@ -53,7 +80,7 @@ const UserTable = (props) => {
                 <Col span={16} className="mt-3">
                     <Table
                         columns={columns}
-                        dataSource={data || []}
+                        dataSource={data1 || []}
                         pagination={{ pageSize: 5 }}
                     />
                 </Col>
@@ -65,12 +92,12 @@ const UserTable = (props) => {
 
 const mapStateProps = (state) => {
     return {
-        data: state.data
+        list: state.data
     }
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        userDelete: (payload) => dispatch(UserDelete(payload))
     }
 }
 

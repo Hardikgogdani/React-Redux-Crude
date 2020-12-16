@@ -21,7 +21,7 @@ const UserContainer = (props) => {
         userDetail.id = data.length + 1;
         data.push(userDetail)
         setData(data)
-        UserDatas(data)
+        UserDatas(userDetail)
         setUserDetail({})
 
     }
