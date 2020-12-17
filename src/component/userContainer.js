@@ -141,19 +141,36 @@ const UserContainer = (props) => {
                                 <span className="danger">{error.gender || ""}</span>
                             </Form.Item>
 
-                            <Form.Item>
 
-                                <Input.Password placeholder="Enter Your PassWord" name="password"
-                                    value={userDetail.password} onChange={handleChange}
-                                    addonBefore={(<LockOutlined />)} />
-                                <span className="danger">{error.password || ""}</span>
-                            </Form.Item>
 
-                            <Form.Item>
-                                <Button className="btn-create-account" onClick={onSubmit}>
-                                    Create Account
+                            {
+                                editableIndex !== null || (
+                                    <Form.Item>
+                                        <Input.Password placeholder="Enter Your PassWord" name="password"
+                                            value={userDetail.password} onChange={handleChange}
+                                            addonBefore={(<LockOutlined />)} />
+                                        <span className="danger">{error.password || ""}</span>
+                                    </Form.Item>
+                                )
+                            }
+                            {
+                                editableIndex !== null ? (
+                                    <Form.Item>
+
+                                        <Button className="btn-create-account" onClick={onSubmit}>
+                                            Edit
                                     </Button>
-                            </Form.Item>
+                                    </Form.Item>
+                                ) : (<Form.Item>
+
+                                    <Button className="btn-create-account" onClick={onSubmit}>
+                                        Submit
+                                </Button>
+                                </Form.Item>)
+
+
+                            }
+
                         </Form>
                     </Card>
                 </Col>
