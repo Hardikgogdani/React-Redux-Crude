@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { UserDelete } from '../redux';
 import { Row, Col, Popconfirm, Button } from 'antd';
 import { connect } from 'react-redux';
 import Table from "antd/lib/table";
 
 const UserTable = (props) => {
-    const { list, userDelete } = props;
-    const [data1, setData1] = useState()
+    const { list, onDelete, OnEdit } = props;
+    const [data1, setData] = useState([])
     useEffect(() => {
-        setData1(list)
-    }, [list, userDelete])
+        setData(list)
+    }, [list])
 
-    const onDelete = (id) => {
-        userDelete(id);
-    }
-
-    const onEdit =(redord)=>{
-
-    }
     const columns = [
         {
             title: 'First Name',
@@ -56,10 +48,10 @@ const UserTable = (props) => {
         {
             title: 'Action',
             dataIndex: 'id',
-            render: (text, record) => (
+            render: (text, record, index) => (
                 <div>
 
-                    <Button className="btn btn-outline-primary btn-mini" onConfirm={() => { OnEdit(record.id) }}>Edit</Button>
+                    <Button className="btn btn-outline-primary btn-mini" onClick={() => { OnEdit(index) }}>Edit</Button>
 
                     &nbsp;&nbsp;
                     <Popconfirm title="Are you sure to Delete？" onConfirm={() => { onDelete(record.id) }} >
@@ -95,10 +87,5 @@ const mapStateProps = (state) => {
         list: state.data
     }
 }
-const mapDispatchToProps = (dispatch) => {
-    return {
-        userDelete: (payload) => dispatch(UserDelete(payload))
-    }
-}
 
-export default connect(mapStateProps, mapDispatchToProps)(UserTable);
+export default connect(mapStateProps)(UserTable);

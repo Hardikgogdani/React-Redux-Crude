@@ -1,6 +1,7 @@
-import { User_Data, User_Delete } from "./userType";
+import { User_Data, User_Delete, User_Update, Update_Item } from "./userType";
 const initialState = {
-    data: []
+    data: [],
+    userData: {}
 }
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -12,10 +13,17 @@ const userReducer = (state = initialState, action) => {
             ...state,
             data: state.data.filter((data) => data.id !== action.payload)
         }
-        case User_Update: return {
-            ...state,
-            data: state.data.filter((data) => data.id !== action.payload)
-        }
+        case User_Update:
+            const updatedList = state.data.map(user => {
+                if (user.id === action.payload.id) {
+                    return action.payload
+                }
+                return user
+            })
+            return {
+                ...state,
+                data: updatedList
+            }
         default: return state;
     }
 }

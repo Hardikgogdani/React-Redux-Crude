@@ -1,31 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
-import { UserData } from '../redux';
+import { UserData, UserUpdate, UserDelete } from '../redux';
+import UserTable from './UserTable';
 import { Row, Col, Card, Form, Input, Radio, Button, InputNumber } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import 'antd/dist/antd.css';
 
 const UserContainer = (props) => {
-    const { UserDatas } = props;
+    const { UserDatas, list, userUpdates, userDelete } = props;
+
     const [userDetail, setUserDetail] = useState({});
+    const [editableIndex, setIndex] = useState(null);
     const [data, setData] = useState([]);
+
+    useEffect(() => {
+        setData(list)
+    }, [list])
+
+    const onDelete = (id) => {
+        userDelete(id);
+    }
+
+    const OnEdit = (index) => {
+        setUserDetail(data[index])
+        setIndex(index)
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         setUserDetail({ ...userDetail, [name]: value })
     }
 
     const onSubmit = () => {
-
-        userDetail.id = data.length + 1;
-        data.push(userDetail)
-        setData(data)
-        UserDatas(userDetail)
-        setUserDetail({})
-
+        if (editableIndex !== null) {
+            userUpdates(userDetail)
+            setIndex(null)
+            setUserDetail({})
+        } else {
+            userDetail.id = data.length + 1;
+            UserDatas(userDetail)
+            setUserDetail({})
+        }
     }
-
 
 
     return (
@@ -96,18 +112,21 @@ const UserContainer = (props) => {
                 </Col>
                 <Col span={8} />
             </Row>
+            <UserTable OnEdit={OnEdit} onDelete={onDelete} />
         </>
     )
 }
 const mapStateToProps = (state) => {
     return {
-
+        list: state.data
     }
+
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        UserDatas: (payload) => dispatch(UserData(payload))
-
+        UserDatas: (payload) => dispatch(UserData(payload)),
+        userUpdates: (payload) => dispatch(UserUpdate(payload)),
+        userDelete: (payload) => dispatch(UserDelete(payload))
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(UserContainer);
