@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { connect } from 'react-redux';
-import { UserData, UserUpdate, UserDelete } from '../redux';
 import UserTable from './UserTable';
 import { Row, Col, Card, Form, Input, Radio, Button, InputNumber } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import 'antd/dist/antd.css';
 
 const UserContainer = (props) => {
-    const { UserDatas, list, userUpdates, userDelete } = props;
+    const { list, dispatch } = props;
 
     const [userDetail, setUserDetail] = useState({});
     const [editableIndex, setIndex] = useState(null);
@@ -19,7 +18,7 @@ const UserContainer = (props) => {
     }, [list])
 
     const onDelete = (id) => {
-        userDelete(id);
+        dispatch({ type: "User_Delete", payload: id })
     }
 
     const OnEdit = (index) => {
@@ -79,14 +78,16 @@ const UserContainer = (props) => {
             return setError(errorObj);
         } else {
             if (editableIndex !== null) {
-                userUpdates(userDetail)
+                dispatch({ type: "User_Update", payload: userDetail })
                 setIndex(null)
-                setUserDetail({})
+                setUserDetail({}) 
             } else {
                 userDetail.id = data.length + 1;
-                UserDatas(userDetail)
+                dispatch({ type: "User_Data", payload: userDetail })
+                setIndex(null)
                 setUserDetail({})
             }
+
         }
     }
 
@@ -141,8 +142,6 @@ const UserContainer = (props) => {
                                 <span className="danger">{error.gender || ""}</span>
                             </Form.Item>
 
-
-
                             {
                                 editableIndex !== null || (
                                     <Form.Item>
@@ -167,8 +166,6 @@ const UserContainer = (props) => {
                                         Submit
                                 </Button>
                                 </Form.Item>)
-
-
                             }
 
                         </Form>
@@ -186,11 +183,5 @@ const mapStateToProps = (state) => {
     }
 
 }
-const mapDispatchToProps = (dispatch) => {
-    return {
-        UserDatas: (payload) => dispatch(UserData(payload)),
-        userUpdates: (payload) => dispatch(UserUpdate(payload)),
-        userDelete: (payload) => dispatch(UserDelete(payload))
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(UserContainer);
+
+export default connect(mapStateToProps)(UserContainer);
